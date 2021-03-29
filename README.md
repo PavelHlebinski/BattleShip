@@ -13,4 +13,4 @@
 | 9  |   |   |   |   |   |   |   |   |   |
 | 10  |   |   |   |   |   |   |   |   |   |
 
-Expamle of entered coordinate: F4
+Example of entered coordinate: F4
