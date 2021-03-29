@@ -12,3 +12,5 @@
 |  8 |   |   |   |   |   |   |   |   |   |
 | 9  |   |   |   |   |   |   |   |   |   |
 | 10  |   |   |   |   |   |   |   |   |   |
+
+Expamle of entered coordinate: F4
