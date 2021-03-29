@@ -41,6 +41,8 @@ namespace BattleShip
 
         public string GetStatus(Ship ship) => ship.staus;
 
+        public int GetHP(Ship ship) => ship.HP;
+
         public void PrintCoordinates()
         {
             foreach (Point coordinate in coorditates)
