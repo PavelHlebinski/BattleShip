@@ -38,6 +38,11 @@ namespace BattleShip.Controllers
 
         private bool CheckCoordiates(string coordinates)
         {
+            if (coordinates.Length > 3 || coordinates.Length <= 1)
+            {
+                Console.WriteLine("Incorrect coordinates!");
+                return false;
+            }
             if (CheckLetterCoordiate(coordinates[0].ToString()) == false || CheckNumberCoordiate(coordinates[1].ToString()) == false)
             {
                 Console.WriteLine("Incorrect coordinates!");
