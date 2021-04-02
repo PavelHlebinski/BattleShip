@@ -1,44 +1,43 @@
 ﻿using BattleShip.Controllers;
-using BattleShip.Structures;
+using BattleShip.ModelHelpers.Structures;
+using BattleShip.Models;
 using System;
 using System.Collections.Generic;
 
 namespace BattleShip.Game
 {
-    internal class GameController
+    class GameController
     {
         public void StartGame(List<Ship> ships)
         {
-            Point shotCoord;
+            Point shotCoordinates;
             var consoleController = new ConsoleController();
+
             do
             {
-                shotCoord = consoleController.GetCoordinates();
-                Shot(ships, shotCoord);
+                shotCoordinates = consoleController.GetCoordinates();
+                Shot(ships, shotCoordinates);
             }
             while (EndGame(ships) == false);
-            Console.WriteLine("You WIN!");
-            Console.WriteLine("For new game press any key.");
-            Console.WriteLine("For exit press Esc");
         }
 
-        private List<Ship> Shot(List<Ship> ships, Point coord)
+        private List<Ship> Shot(List<Ship> ships, Point coordinate)
         {
             foreach (Ship ship in ships)
             {
-                for (int i = 0; i < ship.size; i++)
+                for (int i = 0; i < ship.Size; i++)
                 {
-                    if (ship.coorditates[i].X == coord.X && ship.coorditates[i].Y == coord.Y)
+                    if (ship.Coorditates[i].X == coordinate.X && ship.Coorditates[i].Y == coordinate.Y)
                     {
                         ship.HP--;
                         if (ship.HP == 0)
                         {
-                            ship.staus = "Destroyed";
-                            Console.WriteLine($"Ship was destroyed! The ship had {ship.size} deck(s)");
+                            ship.Status = "Destroyed";
+                            Console.WriteLine($"Ship was destroyed! The ship had {ship.Size} deck(s)");
                         }
                         else
                         {
-                            ship.staus = "Hitted";
+                            ship.Status = "Hit";
                             Console.WriteLine("Hit!");
                         }
                         return ships;
@@ -53,11 +52,14 @@ namespace BattleShip.Game
         {
             foreach (Ship ship in ships)
             {
-                if (ship.staus.Contains("Whole") || ship.staus.Contains("Hitted"))
+                if (ship.Status.Contains("Whole") || ship.Status.Contains("Hit"))
                 {
                     return false;
                 }
             }
+            Console.WriteLine("You WIN!");
+            Console.WriteLine("For new game press any key.");
+            Console.WriteLine("For exit press Esc");
             return true;
         }
     }
