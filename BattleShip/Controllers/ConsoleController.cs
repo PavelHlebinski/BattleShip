@@ -20,29 +20,42 @@ namespace BattleShip.Controllers
              {'j', '1' },
         };
 
-        private string _enteredString;
+        private string _appendedString;
+
+        private string _fullString;
+
+        private char _keyForCheck;
 
         public Point GetCoordinates()
         {
             do
             {
                 Console.WriteLine("Enter coordinate: ");
-                _enteredString = Console.ReadLine().ToLower();
+                _keyForCheck = Console.ReadKey().KeyChar;
+                if (_keyForCheck != 27)
+                {
+                    _appendedString = Console.ReadLine().ToLower();
+                    _fullString = _appendedString.Insert(0, _keyForCheck.ToString());
+                }
+                else
+                {
+                    Environment.Exit(-1);
+                }
             }
-            while (!IsCoordinatesCorrect(_enteredString));
+            while (!IsCoordinatesCorrect(_fullString));
 
-            if (_enteredString.Length == 3)
+            if (_fullString.Length == 3)
             {
                 return new Point
                 {
                     X = 10,
-                    Y = GetY(_enteredString[0]),
+                    Y = GetY(_fullString[0]),
                 };
             }
             return new Point
             {
-                X = GetX(_enteredString[1]),
-                Y = GetY(_enteredString[0]),
+                X = GetX(_fullString[1]),
+                Y = GetY(_fullString[0]),
             };
         }
 

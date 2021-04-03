@@ -1,6 +1,5 @@
 ﻿using BattleShip.ModelHelpers;
 using BattleShip.ModelHelpers.Structures;
-using System;
 using System.Collections.Generic;
 
 namespace BattleShip.Models
