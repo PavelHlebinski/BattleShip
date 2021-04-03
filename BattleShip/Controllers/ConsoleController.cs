@@ -34,8 +34,8 @@ namespace BattleShip.Controllers
                 _keyForCheck = Console.ReadKey().KeyChar;
                 if (_keyForCheck != 27)
                 {
-                    _appendedString = Console.ReadLine().ToLower();
-                    _fullString = _appendedString.Insert(0, _keyForCheck.ToString());
+                    _appendedString = Console.ReadLine();
+                    _fullString = _appendedString.Insert(0, _keyForCheck.ToString().ToLower());
                 }
                 else
                 {
