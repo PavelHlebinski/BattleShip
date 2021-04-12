@@ -1,5 +1,4 @@
 ﻿using BattleShip.Controllers;
-using BattleShip.Game;
 using System;
 
 namespace BattleShip

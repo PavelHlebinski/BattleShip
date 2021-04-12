@@ -12,34 +12,37 @@ namespace BattleShip.Models
 
         public Orientation Orientation;
 
-        public int HP;
+        private int HP { get; set; }
 
-        public string Status;
-
-        public Ship(Point coord, int size, Orientation orientation)
+        public Ship(Point coordinates, int size, Orientation orientation)
         {
             Size = size;
             Orientation = orientation;
-            Status = "Whole";
             HP = size;
             if (orientation == Orientation.Horizontal)
             {
-                Coorditates = SetHorizontalShipCoordinates(size, coord);
+                Coorditates = SetHorizontalShipCoordinates(size, coordinates);
             }
             else
             {
-                Coorditates = SetVerticalShipCoordinates(size, coord);
+                Coorditates = SetVerticalShipCoordinates(size, coordinates);
             }
         }
 
-        public string GetStatus(Ship ship) => ship.Status;
+        public int GetHP(Ship ship) => ship.HP;
+
+        public void SetHP(int hp) => HP = hp;
 
         private List<Point> SetHorizontalShipCoordinates(int size, Point coordinate)
         {
             List<Point> tempPoint = new List<Point>();
             for (int i = 0; i < size; i++)
             {
-                tempPoint.Add(new Point { X = coordinate.X + i, Y = coordinate.Y });
+                tempPoint.Add(new Point
+                {
+                    X = coordinate.X + i,
+                    Y = coordinate.Y
+                });
             }
             return tempPoint;
         }
@@ -49,7 +52,11 @@ namespace BattleShip.Models
             List<Point> tempPoint = new List<Point>();
             for (int i = 0; i < size; i++)
             {
-                tempPoint.Add(new Point { X = coordinate.X, Y = coordinate.Y + i });
+                tempPoint.Add(new Point
+                {
+                    X = coordinate.X,
+                    Y = coordinate.Y + i
+                });
             }
             return tempPoint;
         }

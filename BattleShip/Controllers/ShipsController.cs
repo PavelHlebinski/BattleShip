@@ -21,20 +21,7 @@ namespace BattleShip.Controllers
 
         private int[] _shipCreationRule;
 
-        private static List<Point> GetCoordintaes()
-        {
-            List<Point> points = new List<Point>();
-            for (int x = 1; x < 11; x++)
-            {
-                for (int y = 1; y < 11; y++)
-                {
-                    points.Add(new Point { X = x, Y = y });
-                }
-            }
-            return points;
-        }
-
-        readonly List<Point> _availableCoordinates = GetCoordintaes();
+        readonly List<Point> _availableCoordinates = GetCoordintes();
 
         public List<Ship> CreateShips()
         {
@@ -51,6 +38,23 @@ namespace BattleShip.Controllers
                 _createdShips++;
             }
             return _ships;
+        }
+
+        private static List<Point> GetCoordintes()
+        {
+            List<Point> points = new List<Point>();
+            for (int x = 1; x < 11; x++)
+            {
+                for (int y = 1; y < 11; y++)
+                {
+                    points.Add(new Point 
+                    { 
+                        X = x, 
+                        Y = y 
+                    });
+                }
+            }
+            return points;
         }
 
         private Orientation GetOrientation()

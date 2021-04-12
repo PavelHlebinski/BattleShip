@@ -1,10 +1,9 @@
-﻿using BattleShip.Controllers;
-using BattleShip.ModelHelpers.Structures;
+﻿using BattleShip.ModelHelpers.Structures;
 using BattleShip.Models;
 using System;
 using System.Collections.Generic;
 
-namespace BattleShip.Game
+namespace BattleShip.Controllers
 {
     class GameController
     {
@@ -18,7 +17,7 @@ namespace BattleShip.Game
                 shotCoordinates = consoleController.GetCoordinates();
                 Shot(ships, shotCoordinates);
             }
-            while (EndGame(ships) == false);
+            while (!EndGame(ships));
         }
 
         private List<Ship> Shot(List<Ship> ships, Point coordinate)
@@ -29,17 +28,16 @@ namespace BattleShip.Game
                 {
                     if (ship.Coorditates[i].X == coordinate.X && ship.Coorditates[i].Y == coordinate.Y)
                     {
-                        ship.HP--;
-                        if (ship.HP == 0)
+                        var shipHP = ship.GetHP(ship) - 1;
+                        if (shipHP == 0)
                         {
-                            ship.Status = "Destroyed";
                             Console.WriteLine($"Ship was destroyed! The ship had {ship.Size} deck(s)");
                         }
                         else
                         {
-                            ship.Status = "Hit";
                             Console.WriteLine("Hit!");
                         }
+                        ship.SetHP(shipHP);
                         return ships;
                     }
                 }
@@ -52,7 +50,8 @@ namespace BattleShip.Game
         {
             foreach (Ship ship in ships)
             {
-                if (ship.Status.Contains("Whole") || ship.Status.Contains("Hit"))
+                var shipHP = ship.GetHP(ship);
+                if (shipHP != 0)
                 {
                     return false;
                 }

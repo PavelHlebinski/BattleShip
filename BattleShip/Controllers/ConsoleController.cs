@@ -65,7 +65,6 @@ namespace BattleShip.Controllers
 
         private bool IsCoordinatesCorrect(string coordinates)
         {
-            coordinates.ToCharArray();
             if (!IsLenghtCorrect(coordinates) || !IsLetterCorrect(coordinates[0]) || !IsNumberCorrect(coordinates[1]))
             {
                 Console.WriteLine("Incorrect coordinates!");
