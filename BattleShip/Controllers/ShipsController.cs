@@ -1,136 +1,163 @@
-﻿using BattleShip.Structures;
+﻿using BattleShip.ModelHelpers;
+using BattleShip.ModelHelpers.Structures;
+using BattleShip.Models;
 using System;
 using System.Collections.Generic;
+using System.Linq;
 
 namespace BattleShip.Controllers
 {
     class ShipsController
     {
-        private int createdShip;
+        private List<Ship> _ships;
 
-        private int ruleNumber;
+        private readonly List<Point> _usedCells = new List<Point>();
 
-        private int[] shipCreationRule;
+        private readonly int[] _goodCells = new int[] { 1, 2, 3, 4, 5, 6, 7, 8, 9, 10 };
 
-        private List<Point> usesCells;
+        private int _createdShips;
 
-        private List<Ship> ships;
+        private int _ruleNumber;
+
+        private int[] _shipCreationRule;
+
+        readonly List<Point> _availableCoordinates = GetCoordintes();
 
         public List<Ship> CreateShips()
         {
-            createdShip = 0;
-            ruleNumber = 0;
-            shipCreationRule = new[] { 4, 3, 3, 2, 2, 2, 1, 1, 1, 1 };
-            usesCells = new List<Point>();
-            ships = new List<Ship>();
-            Ship ship;
-            while (createdShip < 10)
+            _ships = new List<Ship>();
+            _createdShips = 0;
+            _ruleNumber = 0;
+            _shipCreationRule = new[] { 4, 3, 3, 2, 2, 2, 1, 1, 1, 1 };
+            while (_createdShips < 10)
             {
-                do
-                {
-                    ship = new Ship(GetRandomPoint(), GetShipSize(), GetRandomOrientation());
-                }
-                while (CheckShipPosition(usesCells, ship) == false);
-                SetUsesCells(ship, usesCells);
-                ships.Add(ship);
-                ruleNumber++;
-                createdShip++;
-            };
-
-            return ships;
+                Orientation orientation = GetOrientation();
+                int size = GetShipSize();
+                _ships.Add(new Ship(GetCoordinates(orientation, size), size, orientation));
+                _ruleNumber++;
+                _createdShips++;
+            }
+            return _ships;
         }
-        private Point GetRandomPoint()
+
+        private static List<Point> GetCoordintes()
         {
-            var rand = new Random();
-            return new Point() { X = rand.Next(1, 11), Y = rand.Next(1, 11) };
+            List<Point> points = new List<Point>();
+            for (int x = 1; x < 11; x++)
+            {
+                for (int y = 1; y < 11; y++)
+                {
+                    points.Add(new Point 
+                    { 
+                        X = x, 
+                        Y = y 
+                    });
+                }
+            }
+            return points;
         }
 
-        private Orientation GetRandomOrientation()
+        private Orientation GetOrientation()
         {
             var randomValue = new Random().Next(1, 3);
             return (Orientation)randomValue;
         }
 
-        private int GetShipSize() => shipCreationRule[ruleNumber];
+        private int GetShipSize() => _shipCreationRule[_ruleNumber];
 
-
-        private List<Point> SetUsesCells(Ship ship, List<Point> usesCells)
+        private Point GetCoordinates(Orientation orientation, int size)
         {
-            for (int i = -1; i < 2; i++)
+            Point shipCoordinates;
+
+            do
             {
-                for (int j = -1; j < ship.size + 1; j++)
+                var randomValue = new Random().Next(0, _availableCoordinates.Count);
+                shipCoordinates = new Point
                 {
-                    if (ship.orientation == (Orientation)1)
-                    {
-                        usesCells.Add(new Point() { X = ship.coorditates[0].X + j, Y = ship.coorditates[0].Y + i });
-                    }
-                    else
-                    {
-                        usesCells.Add(new Point() { X = ship.coorditates[0].X + i, Y = ship.coorditates[0].Y + j });
-                    }
-                }
+                    X = _availableCoordinates.ElementAt(randomValue).X,
+                    Y = _availableCoordinates.ElementAt(randomValue).Y
+                };
+
             }
-            return usesCells;
+            while (!IsCoordinatesAvailable(shipCoordinates, orientation, size));
+
+            FillUsedCoordinates(shipCoordinates, size, orientation);
+            RemovUnusedCoordinates(_availableCoordinates, _usedCells);
+            return shipCoordinates;
         }
 
-        private bool CheckShipPosition(List<Point> usesCells, Ship ship)
+        private void RemovUnusedCoordinates(List<Point> unusedCoordinates, List<Point> usedCoorindates)
         {
-            if (CheckOutOfBattleField(ship) == false)
+            foreach (Point usedCoorindate in usedCoorindates)
             {
-                return false;
+                unusedCoordinates.Remove(usedCoorindate);
             }
+        }
 
-            if (CheckCellsForUses(ship.coorditates[0].X, ship.coorditates[0].Y, usesCells) == false)
+        private bool IsCoordinatesAvailable(Point coordinate, Orientation orientation, int size)
+        {
+            if (orientation == Orientation.Horizontal)
             {
-                return false;
-            }
-
-            if (ship.size == 1)
-            {
-                return true;
-            }
-
-            if (ship.orientation == (Orientation)2)
-            {
-                if (CheckCellsForUses(ship.coorditates[0].X, ship.coorditates[0].Y + ship.size - 1, usesCells) == false)
+                var tempPoint = new Point
                 {
-                    return false;
+                    X = coordinate.X + size,
+                    Y = coordinate.Y
+                };
+                if (!ChekOutOfRange(tempPoint) && !_usedCells.Contains(tempPoint))
+                {
+                    return true;
                 }
             }
             else
             {
-                if (CheckCellsForUses(ship.coorditates[0].X + ship.size - 1, ship.coorditates[0].Y, usesCells) == false)
+                var tempPoint = new Point
                 {
-                    return false;
+                    X = coordinate.X,
+                    Y = coordinate.Y + size
+                };
+                if (!ChekOutOfRange(tempPoint) && !_usedCells.Contains(tempPoint))
+                {
+                    return true;
                 }
+            }
+            return false;
+        }
+
+        private bool ChekOutOfRange(Point coordinate)
+        {
+
+            if (_goodCells.Contains(coordinate.X) && _goodCells.Contains(coordinate.Y))
+            {
+                return false;
             }
             return true;
         }
 
-        private bool CheckCellsForUses(int x, int y, List<Point> usesCells)
+        private void FillUsedCoordinates(Point usedCell, int size, Orientation orientation)
         {
-            foreach (Point cell in usesCells)
+            for (int i = -1; i < 2; i++)
             {
-                if (cell.X != x || cell.Y != y)
+                for (int j = -1; j < size + 1; j++)
                 {
-                    continue;
+                    if (orientation == Orientation.Horizontal)
+                    {
+                        _usedCells.Add(new Point
+                        {
+                            X = usedCell.X + j,
+                            Y = usedCell.Y + i
+                        });
+                    }
+                    else
+                    {
+                        _usedCells.Add(new Point
+                        {
+                            X = usedCell.X + i,
+                            Y = usedCell.Y + j
+                        });
+                    }
                 }
-                return false;
             }
-            return true;
-        }
-
-        private bool CheckOutOfBattleField(Ship ship)
-        {
-            if (ship.orientation == (Orientation)1 && ship.coorditates[0].X + ship.size > 10)
-            {
-                return false;
-            }
-            if (ship.orientation == (Orientation)2 && ship.coorditates[0].Y + ship.size > 10)
-            {
-                return false;
-            }
-            return true;
         }
     }
 }
+

@@ -1,6 +1,6 @@
-﻿namespace BattleShip.Structures
+﻿namespace BattleShip.ModelHelpers.Structures
 {
-    public struct Point
+    struct Point
     {
         public int X { get; set; }
 
